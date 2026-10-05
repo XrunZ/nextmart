@@ -1,0 +1,111 @@
+===============================================================================
+                       PENJELASAN ARSITEKTUR NEXTMART
+===============================================================================
+Project NextMart dibuat menggunakan Next.js App Router dengan arsitektur Modular 
+Monolith dan Manajemen State React murni (Context API & Derived State).
+
+Berikut adalah penjelasan detail mengenai 4 poin utama sesuai kebutuhan project:
+
+-------------------------------------------------------------------------------
+1. FETCHING DATA (Pengambilan Data API & Fallback Resiliensi)
+-------------------------------------------------------------------------------
+File Utama: `src/lib/api/products.ts`
+Penggunaan di Halaman: 
+- `src/app/page.tsx` (Homepage - Server Component)
+- `src/app/products/[id]/page.tsx` (Product Detail - Server Component)
+
+Penjelasan Detail:
+a. Data fetching dilakukan secara Server-Side (Server Component) menggunakan 
+   fungsi `fetch()` native dari Next.js untuk memaksimalkan performa, SEO, 
+   dan kecepatan initial load.
+b. Fungsi utama di `src/lib/api/products.ts`:
+   - `getProducts()`: Mengambil daftar produk dari Fake Store API 
+     (`https://fakestoreapi.com/products`).
+   - `getProduct(id)`: Mengambil detail produk berdasarkan ID (`/products/:id`).
+   - `getCategories()`: Mengambil daftar kategori produk (`/products/categories`).
+c. Strategi Caching & Revalidasi:
+   - Menggunakan opsi `{ next: { revalidate: 3600 } }` (Static Data Fetching 
+     dengan ISR revalidasi per jam).
+d. Penanganan Error & Resiliensi Fallback:
+   - Jika API utama mengalami downtime atau diblokir oleh Cloudflare (HTTP 403/521), 
+     blok `try...catch` secara otomatis menggunakan dataset fallback `FALLBACK_PRODUCTS`
+     dan mensanitasi gambar menggunakan CDN Unsplash (`getSafeImageUrl`).
+
+-------------------------------------------------------------------------------
+2. ADD TO CART KE DALAM STATE (Client State & Derived Values)
+-------------------------------------------------------------------------------
+File Utama: 
+- `src/context/CartContext.tsx` (Container Context & Provider State)
+- `src/hooks/useCart.ts` (Custom Hook untuk Kemudahan Akses)
+- `src/components/products/ProductCard.tsx` (Tombol Quick Add-to-Cart)
+- `src/app/products/[id]/ProductAddToCartForm.tsx` (Form Add-to-Cart kuantitas)
+- `src/components/cart/CartDrawer.tsx` (Slide-over Cart Panel)
+
+Penjelasan Detail:
+a. State Cart didefinisikan dalam `CartContext.tsx` menggunakan `useState<CartItem[]>([])`.
+b. Fungsi `addToCart(product, quantity)`:
+   - Memeriksa apakah produk sudah ada di dalam keranjang (`findIndex`).
+   - Jika SUDAH ada: Menambah kuantitas produk yang ada (`quantity + newQuantity`).
+   - Jika BELUM ada: Menambahkan item baru ke dalam array `cart`.
+   - Membuka drawer keranjang belanja secara otomatis (`setIsDrawerOpen(true)`).
+c. Persistensi `localStorage`:
+   - `useEffect` otomatis menyimpan data keranjang ke `localStorage` (`nextmart_cart_v1`)
+     sehingga isi keranjang tidak hilang saat halaman di-refresh.
+d. Turunan State (Derived State - TANPA Duplikasi State):
+   - Sesuai aturan arsitektur, `totalItems` dan `totalPrice` TIDAK disimpan dalam 
+     `useState` terpisah, melainkan dihitung secara dinamis dari array `cart`:
+     
+     const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+     const totalPrice = cart.reduce((sum, item) => sum + item.product.price * item.quantity, 0);
+
+-------------------------------------------------------------------------------
+3. PENCARIAN (Searching - State Terhubung dengan URL Query)
+-------------------------------------------------------------------------------
+File Utama:
+- `src/components/products/ProductSearch.tsx` (Komponen Input Pencarian)
+- `src/components/layout/Header.tsx` (Bilah Pencarian pada Header Desktop & Mobile)
+
+Penjelasan Detail:
+a. Pencarian bersifat realtime dan terintegrasi dengan URL query parameter (`?q=keyword`).
+b. Menggunakan React Hooks Next.js Navigation:
+   - `useSearchParams()` untuk membaca query `q` yang sedang aktif di URL.
+   - `useRouter()` (`router.replace` / `router.push`) untuk memperbarui URL tanpa 
+     perlu reload seluruh halaman (`scroll: false`).
+c. Keunggulan URL-synced Search:
+   - Hasil pencarian dapat di-bookmark, dibagikan (shareable link), dan tetap 
+     bertahan saat halaman di-refresh.
+
+-------------------------------------------------------------------------------
+4. FILTERING & DERIVED STATE (Pipeline Penyaringan Produk)
+-------------------------------------------------------------------------------
+File Utama:
+- `src/components/products/ProductFilter.tsx` (Komponen Filter Kategori)
+- `src/components/products/ProductSection.tsx` (Pipeline Penyaringan & Grid)
+
+Penjelasan Detail:
+a. Filter Kategori terhubung dengan URL query parameter (`?category=kategori`).
+b. Pipeline Penyaringan Produk (Derived Filtering):
+   - Array produk asli (`initialProducts`) bersumber dari Server Component dan 
+     dijaga tetap IMMUTABLE (tidak pernah diubah/di-mutate).
+   - Penyaringan produk yang ditampilkan dilakukan di `ProductSection.tsx` menggunakan `useMemo`:
+
+     const filteredProducts = useMemo(() => {
+       return initialProducts.filter((product) => {
+         const matchesSearch = searchQuery.trim()
+           ? product.title.toLowerCase().includes(searchQuery.toLowerCase().trim())
+           : true;
+
+         const matchesCategory = selectedCategory.toLowerCase() === "all"
+           ? true
+           : product.category.toLowerCase() === selectedCategory.toLowerCase();
+
+         return matchesSearch && matchesCategory;
+       });
+     }, [initialProducts, searchQuery, selectedCategory]);
+
+c. Jika hasil pencarian atau filter tidak ditemukan, `ProductGrid.tsx` menampilkan 
+   *Empty State* ("No products found") dengan tombol untuk mereset seluruh filter.
+
+===============================================================================
+                                   SELESAI
+===============================================================================

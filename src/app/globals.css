@@ -17,23 +17,6 @@
   --danger: #DC2626;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #09090B;
-    --surface: #18181B;
-    --foreground: #FAFAFA;
-    --muted: #A1A1AA;
-    --border: #27272A;
-    --primary: #FAFAFA;
-    --primary-hover: #E4E4E7;
-    --accent: #60A5FA;
-    --accent-hover: #93C5FD;
-    --success: #22C55E;
-    --warning: #F59E0B;
-    --danger: #EF4444;
-  }
-}
-
 .dark {
   --background: #09090B;
   --surface: #18181B;

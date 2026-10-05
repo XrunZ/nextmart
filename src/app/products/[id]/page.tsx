@@ -34,7 +34,7 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
 
       <div className="grid grid-cols-1 md:grid-cols-12 gap-8 lg:gap-12 items-start">
         {/* Product Image Panel (Takes 6 cols) */}
-        <div className="md:col-span-6 rounded-card border border-border bg-white p-8 sm:p-12 flex items-center justify-center relative aspect-square">
+        <div className="md:col-span-6 rounded-card border border-border bg-white dark:bg-zinc-900 p-8 sm:p-12 flex items-center justify-center relative aspect-square">
           <ProductImage
             src={product.image}
             alt={product.title}

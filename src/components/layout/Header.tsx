@@ -8,6 +8,7 @@ import { BRAND_WORDMARK } from "@/lib/constants";
 import { useCart } from "@/hooks/useCart";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
+import { ThemeToggle } from "./ThemeToggle";
 
 export function Header() {
   const router = useRouter();
@@ -73,6 +74,8 @@ export function Header() {
 
           {/* Right Actions */}
           <div className="flex items-center gap-2 shrink-0">
+            <ThemeToggle />
+
             <Link href="/cart" className="hidden sm:inline-flex">
               <Button variant="ghost" size="sm" className="text-muted hover:text-foreground">
                 View Cart Page

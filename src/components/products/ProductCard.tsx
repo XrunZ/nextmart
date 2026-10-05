@@ -29,7 +29,7 @@ export function ProductCard({ product }: ProductCardProps) {
     <div className="group relative flex flex-col justify-between rounded-card border border-border bg-surface p-4 transition-all duration-200 hover:border-zinc-300 dark:hover:border-zinc-700">
       <Link href={`/products/${product.id}`} className="flex flex-col gap-3">
         {/* Image Container */}
-        <div className="relative aspect-square w-full overflow-hidden rounded-md bg-white p-6 flex items-center justify-center border border-zinc-100 dark:border-zinc-800">
+        <div className="relative aspect-square w-full overflow-hidden rounded-md bg-white dark:bg-zinc-900 p-6 flex items-center justify-center border border-zinc-100 dark:border-zinc-800">
           <ProductImage
             src={product.image}
             alt={product.title}

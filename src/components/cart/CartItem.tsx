@@ -37,7 +37,7 @@ export function CartItem({ item, onCloseDrawer }: CartItemProps) {
       <Link
         href={`/products/${product.id}`}
         onClick={onCloseDrawer}
-        className="relative h-16 w-16 shrink-0 overflow-hidden rounded-md bg-white p-2 border border-border flex items-center justify-center group"
+        className="relative h-16 w-16 shrink-0 overflow-hidden rounded-md bg-white dark:bg-zinc-900 p-2 border border-border flex items-center justify-center group"
       >
         <ProductImage
           src={product.image}

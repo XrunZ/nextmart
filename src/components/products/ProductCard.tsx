@@ -1,13 +1,13 @@
 "use client";
 
 import React, { useState } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { Star, Plus, Check } from "lucide-react";
 import { Product } from "@/types/product";
 import { formatPrice, formatCategoryName } from "@/lib/utils";
 import { useCart } from "@/hooks/useCart";
 import { Button } from "@/components/ui/Button";
+import { ProductImage } from "./ProductImage";
 
 interface ProductCardProps {
   product: Product;
@@ -28,15 +28,15 @@ export function ProductCard({ product }: ProductCardProps) {
   return (
     <div className="group relative flex flex-col justify-between rounded-card border border-border bg-surface p-4 transition-all duration-200 hover:border-zinc-300 dark:hover:border-zinc-700">
       <Link href={`/products/${product.id}`} className="flex flex-col gap-3">
-        {/* Image Container with generous padding */}
+        {/* Image Container */}
         <div className="relative aspect-square w-full overflow-hidden rounded-md bg-white p-6 flex items-center justify-center border border-zinc-100 dark:border-zinc-800">
-          <Image
+          <ProductImage
             src={product.image}
             alt={product.title}
             fill
             sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
             className="object-contain transition-transform duration-300 group-hover:scale-105"
-            priority={false}
+            fallbackTitle={product.title}
           />
         </div>
 

@@ -1,11 +1,11 @@
 import React from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { ArrowLeft, Star, ShieldCheck, Truck, RotateCcw } from "lucide-react";
 import { getProduct } from "@/lib/api/products";
 import { formatPrice, formatCategoryName } from "@/lib/utils";
 import { ProductAddToCartForm } from "./ProductAddToCartForm";
+import { ProductImage } from "@/components/products/ProductImage";
 
 interface ProductPageProps {
   params: Promise<{ id: string }>;
@@ -35,13 +35,14 @@ export default async function ProductDetailPage({ params }: ProductPageProps) {
       <div className="grid grid-cols-1 md:grid-cols-12 gap-8 lg:gap-12 items-start">
         {/* Product Image Panel (Takes 6 cols) */}
         <div className="md:col-span-6 rounded-card border border-border bg-white p-8 sm:p-12 flex items-center justify-center relative aspect-square">
-          <Image
+          <ProductImage
             src={product.image}
             alt={product.title}
             fill
             priority
             sizes="(max-width: 768px) 100vw, 50vw"
             className="object-contain p-6"
+            fallbackTitle={product.title}
           />
         </div>
 

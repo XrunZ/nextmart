@@ -1,12 +1,12 @@
 "use client";
 
 import React from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { Plus, Minus, Trash2 } from "lucide-react";
 import { CartItem as CartItemType } from "@/types/product";
 import { formatPrice } from "@/lib/utils";
 import { useCart } from "@/hooks/useCart";
+import { ProductImage } from "@/components/products/ProductImage";
 
 interface CartItemProps {
   item: CartItemType;
@@ -39,12 +39,13 @@ export function CartItem({ item, onCloseDrawer }: CartItemProps) {
         onClick={onCloseDrawer}
         className="relative h-16 w-16 shrink-0 overflow-hidden rounded-md bg-white p-2 border border-border flex items-center justify-center group"
       >
-        <Image
+        <ProductImage
           src={product.image}
           alt={product.title}
           fill
           sizes="64px"
           className="object-contain transition-transform duration-200 group-hover:scale-105"
+          fallbackTitle={product.title}
         />
       </Link>
 

@@ -36,7 +36,10 @@ export default function RootLayout({
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
       </head>
-      <body className="flex min-h-screen flex-col bg-background text-foreground antialiased transition-colors duration-200">
+      <body
+        suppressHydrationWarning
+        className="flex min-h-screen flex-col bg-background text-foreground antialiased transition-colors duration-200"
+      >
         <ThemeProvider>
           <CartProvider>
             <Suspense fallback={null}>

@@ -65,6 +65,26 @@ const FALLBACK_PRODUCTS: Product[] = [
   },
   {
     id: 7,
+    title: "White Gold Plated Princess",
+    price: 9.99,
+    description:
+      "Classic Created Wedding Engagement Solitaire Diamond Promise Ring for Her. Gifts to spoil your love more for Engagement, Wedding, Anniversary, Valentine's Day.",
+    category: "jewelery",
+    image: "https://images.unsplash.com/photo-1603561591411-07134e71a2a9?w=800&auto=format&fit=crop&q=80",
+    rating: { rate: 3.0, count: 400 },
+  },
+  {
+    id: 8,
+    title: "Pierced Owl Rose Gold Plated Stainless Steel Double",
+    price: 10.99,
+    description:
+      "Rose Gold Plated Double Flared Tunnel Plug Earrings. Made of 316L Stainless Steel with high polished smooth surface.",
+    category: "jewelery",
+    image: "https://images.unsplash.com/photo-1535632066927-ab7c9ab60908?w=800&auto=format&fit=crop&q=80",
+    rating: { rate: 1.9, count: 100 },
+  },
+  {
+    id: 9,
     title: "WD 2TB Elements Portable External Hard Drive - USB 3.0",
     price: 64,
     description:
@@ -74,7 +94,7 @@ const FALLBACK_PRODUCTS: Product[] = [
     rating: { rate: 3.3, count: 203 },
   },
   {
-    id: 8,
+    id: 10,
     title: "SanDisk SSD PLUS 1TB Internal SSD - SATA III 6 Gb/s",
     price: 109,
     description:
@@ -84,7 +104,7 @@ const FALLBACK_PRODUCTS: Product[] = [
     rating: { rate: 2.9, count: 470 },
   },
   {
-    id: 9,
+    id: 11,
     title: "Silicon Power 256GB SSD 3D NAND A55 SLC Cache Performance",
     price: 109,
     description:
@@ -94,7 +114,7 @@ const FALLBACK_PRODUCTS: Product[] = [
     rating: { rate: 4.8, count: 319 },
   },
   {
-    id: 10,
+    id: 12,
     title: "WD 4TB Gaming Drive Portable External Hard Drive",
     price: 114,
     description:
@@ -104,7 +124,7 @@ const FALLBACK_PRODUCTS: Product[] = [
     rating: { rate: 4.8, count: 400 },
   },
   {
-    id: 11,
+    id: 13,
     title: "Acer SB220Q bi 21.5 inches Full HD (1920 x 1080) IPS Ultra-Thin",
     price: 599,
     description:
@@ -114,7 +134,7 @@ const FALLBACK_PRODUCTS: Product[] = [
     rating: { rate: 2.9, count: 250 },
   },
   {
-    id: 12,
+    id: 14,
     title: "Samsung 49-Inch CHG90 144Hz Curved Gaming Monitor",
     price: 999.99,
     description:
@@ -124,7 +144,7 @@ const FALLBACK_PRODUCTS: Product[] = [
     rating: { rate: 2.2, count: 140 },
   },
   {
-    id: 13,
+    id: 15,
     title: "BIYLACLESEN Women's 3-in-1 Snowboard Jacket Winter Coats",
     price: 56.99,
     description:
@@ -134,7 +154,7 @@ const FALLBACK_PRODUCTS: Product[] = [
     rating: { rate: 2.6, count: 235 },
   },
   {
-    id: 14,
+    id: 16,
     title: "Lock and Love Women's Removable Hooded Faux Leather Moto Biker Jacket",
     price: 29.95,
     description:
@@ -144,7 +164,7 @@ const FALLBACK_PRODUCTS: Product[] = [
     rating: { rate: 2.9, count: 340 },
   },
   {
-    id: 15,
+    id: 17,
     title: "Rain Jacket Women Windbreaker Striped Lined Waterproof",
     price: 39.99,
     description:
@@ -154,7 +174,7 @@ const FALLBACK_PRODUCTS: Product[] = [
     rating: { rate: 3.8, count: 679 },
   },
   {
-    id: 16,
+    id: 18,
     title: "MBJ Women's Solid Short Sleeve Boat Neck V Top",
     price: 9.85,
     description:
@@ -164,7 +184,7 @@ const FALLBACK_PRODUCTS: Product[] = [
     rating: { rate: 4.7, count: 130 },
   },
   {
-    id: 17,
+    id: 19,
     title: "Opna Women's Short Sleeve Moisture Wicking Athletic T-Shirt",
     price: 7.95,
     description:
@@ -174,7 +194,7 @@ const FALLBACK_PRODUCTS: Product[] = [
     rating: { rate: 4.5, count: 146 },
   },
   {
-    id: 18,
+    id: 20,
     title: "DANVOUY Womens Casual Cotton Short Sleeve Crewneck T Shirt",
     price: 12.99,
     description:
@@ -196,16 +216,21 @@ export async function getProducts(): Promise<Product[]> {
   try {
     const res = await fetch(`${API_BASE_URL}/products`, {
       next: { revalidate: 3600 },
+      headers: {
+        Accept: "application/json",
+      },
     });
 
     if (!res.ok) {
-      throw new Error(`Failed to fetch products: ${res.statusText}`);
+      console.info(
+        `[NextMart API] fakestoreapi.com returned status ${res.status}. Using resilient fallback catalog.`
+      );
+      return FALLBACK_PRODUCTS.map(sanitizeProduct);
     }
 
     const data: Product[] = await res.json();
     return data.map(sanitizeProduct);
-  } catch (error) {
-    console.warn("API fetch error or server down, using enhanced fallback products:", error);
+  } catch {
     return FALLBACK_PRODUCTS.map(sanitizeProduct);
   }
 }
@@ -214,6 +239,9 @@ export async function getProduct(id: string | number): Promise<Product | null> {
   try {
     const res = await fetch(`${API_BASE_URL}/products/${id}`, {
       next: { revalidate: 3600 },
+      headers: {
+        Accept: "application/json",
+      },
     });
 
     if (res.status === 404) {
@@ -221,13 +249,13 @@ export async function getProduct(id: string | number): Promise<Product | null> {
     }
 
     if (!res.ok) {
-      throw new Error(`Failed to fetch product ${id}: ${res.statusText}`);
+      const found = FALLBACK_PRODUCTS.find((p) => String(p.id) === String(id));
+      return found ? sanitizeProduct(found) : null;
     }
 
     const data: Product = await res.json();
     return sanitizeProduct(data);
-  } catch (error) {
-    console.warn(`API fetch error for product ${id}, checking fallback:`, error);
+  } catch {
     const found = FALLBACK_PRODUCTS.find((p) => String(p.id) === String(id));
     return found ? sanitizeProduct(found) : null;
   }
@@ -237,16 +265,18 @@ export async function getCategories(): Promise<string[]> {
   try {
     const res = await fetch(`${API_BASE_URL}/products/categories`, {
       next: { revalidate: 86400 },
+      headers: {
+        Accept: "application/json",
+      },
     });
 
     if (!res.ok) {
-      throw new Error(`Failed to fetch categories: ${res.statusText}`);
+      return ["electronics", "jewelery", "men's clothing", "women's clothing"];
     }
 
     const categories: string[] = await res.json();
     return categories;
-  } catch (error) {
-    console.warn("API fetch error, using fallback categories:", error);
+  } catch {
     return ["electronics", "jewelery", "men's clothing", "women's clothing"];
   }
 }

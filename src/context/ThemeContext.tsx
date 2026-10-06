@@ -25,8 +25,11 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
       const savedTheme = localStorage.getItem(LOCAL_STORAGE_KEY) as Theme | null;
       if (savedTheme === "light" || savedTheme === "dark") {
         initialTheme = savedTheme;
-      } else if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
-        initialTheme = darkThemeOrLight();
+      } else if (
+        document.documentElement.classList.contains("dark") ||
+        window.matchMedia("(prefers-color-scheme: dark)").matches
+      ) {
+        initialTheme = "dark";
       }
     } catch (e) {
       console.error("Failed to read theme preference", e);

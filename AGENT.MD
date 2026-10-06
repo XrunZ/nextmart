@@ -593,3 +593,45 @@ Before coding:
 5. Inspect existing dependencies.
 6. Inspect existing components.
 7. Identify reusable code.
+8. Create a structured plan.
+
+Then:
+
+```text
+Plan
+  ↓
+Implement
+  ↓
+Test
+  ↓
+Review
+  ↓
+Clean up
+```
+
+For significant changes, explain the plan before implementation.
+
+Do not invent requirements.
+
+---
+
+# 25. Definition of Done
+
+A feature is complete when:
+
+- the requested functionality works,
+- API fetching works,
+- search works,
+- filtering works,
+- cart state works,
+- derived state is correct,
+- loading state works,
+- error state works,
+- empty state works,
+- responsive UI works,
+- accessibility basics work,
+- TypeScript is clean,
+- lint passes,
+- no unnecessary dependencies were added,
+- implementation follows `ARCHITECTURE.md`,
+- UI follows `DESIGN.md`.

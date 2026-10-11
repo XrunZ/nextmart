@@ -77,7 +77,7 @@ Tidak ada library state eksternal (Redux, Zustand, Jotai) — state ditangani mu
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/<your-username>/nextmart.git
+git clone https://github.com/XrunZ/nextmart.git
 cd nextmart
 
 # 2. Install dependencies
@@ -127,7 +127,7 @@ src/
 ├── components/
 │   ├── ui/                  # Button, Input, Badge, Skeleton
 │   ├── layout/              # Header, Footer, ThemeToggle
-│   ├── products/            # ProductCard, Grid, Search, Filter, Section
+│   ├── products/            # ProductCard, ProductGrid, ProductSearch, ProductFilter, ProductSection, ProductImage
 │   └── cart/                # CartDrawer, CartItem, CartSummary, EmptyCart
 │
 ├── context/                 # CartContext, ThemeContext
@@ -207,7 +207,7 @@ Jika API mengembalikan error atau tidak dapat dijangkau, fungsi akan memakai kat
 | [`AGENT.MD`](AGENT.MD) | Rules and conventions for contributors / AI agents. |
 | [`ARCHITECTURE.md`](ARCHITECTURE.md) | Architecture, data flow, and module boundaries. |
 | [`DESIGN.md`](DESIGN.md) | Design system: color, typography, spacing, components. |
-| [`penjelasan.txt`](penjelasan.txt) | Penjelasan arsitektur dalam Bahasa Indonesia. |
+| [`docs/superpowers/plans/2026-10-05-nextmart-ecommerce.md`](docs/superpowers/plans/2026-10-05-nextmart-ecommerce.md) | Implementation plan: task-by-task build guide. |
 
 ---
 
